@@ -44,7 +44,7 @@ var map;
 var player;
 var cursors;
 var stars;
-var groundLayer, coinLayer;
+var groundLayer;//, coinLayer;
 var text;
 var score = 0;
 var bombs;
@@ -80,6 +80,8 @@ function preload() {
     this.load.image('star', 'assets/star.png');
     
     this.load.audio('music', 'assets/music.mp3');
+    
+    this.load.image('rainy', 'assets/rain.jpg')
     
     // player animations
     this.load.atlas('player', 'assets/player.png', 'assets/player.json');    
@@ -117,6 +119,17 @@ function create() {
         loop: true
     })*/
     
+        // set background color, so the sky is not black    
+    //this.cameras.main.setBackgroundColor('#ccccff');
+    if(background_image.indexOf('rain') !== -1){
+        
+        //this.cameras.main.setBackgroundColor('#0000FF'); 
+        this.add.image(800, 800, 'rainy');
+    }
+    else if(background_image.indexOf('clear') !== -1){
+        this.cameras.main.setBackgroundColor('#ccccff');
+    }
+    
     // tiles for the ground layer
     var groundTiles = map.addTilesetImage('tiles');
     // create the ground layer
@@ -125,9 +138,9 @@ function create() {
     groundLayer.setCollisionByExclusion([-1]);
 
     // coin image used as tileset
-    var coinTiles = map.addTilesetImage('coin');
+    //var coinTiles = map.addTilesetImage('coin');
     // add coins as tiles
-    coinLayer = map.createDynamicLayer('Coins', coinTiles, 0, 0);
+    //coinLayer = map.createDynamicLayer('Coins', coinTiles, 0, 0);
 
     // set the boundaries of our game world
     this.physics.world.bounds.width = groundLayer.width;
@@ -144,10 +157,12 @@ function create() {
     // player will collide with the level tiles 
     this.physics.add.collider(groundLayer, player);
 
+/*
     coinLayer.setTileIndexCallback(17, collectCoin, this);
     // when the player overlaps with a tile with index 17, collectCoin 
     // will be called    
     this.physics.add.overlap(player, coinLayer);
+*/
 
     // player walk animation
     this.anims.create({
@@ -171,15 +186,7 @@ function create() {
     // make the camera follow the player
     this.cameras.main.startFollow(player);
 
-    // set background color, so the sky is not black    
-    //this.cameras.main.setBackgroundColor('#ccccff');
-    if(background_image.indexOf('rain') !== -1){
-        
-        this.cameras.main.setBackgroundColor('#0000FF');   
-    }
-    else if(background_image.indexOf('clear') !== -1){
-        this.cameras.main.setBackgroundColor('#ccccff');
-    }
+
 
     // this text will show the score
     text = this.add.text(20, 20, '0', {

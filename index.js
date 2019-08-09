@@ -44,8 +44,7 @@ var map;
 var player;
 var cursors;
 var stars;
-var groundLayer;//, coinLayer;
-var text;
+var groundLayer;
 var score = 0;
 var bombs;
 var gameOver = false;
@@ -69,9 +68,6 @@ function preload() {
 
     // tiles in spritesheet 
     this.load.spritesheet('tiles', 'assets/tiles.png', {frameWidth: 70, frameHeight: 70});
-    
-    // simple coin image
-    this.load.image('coin', 'assets/coinGold.png');
     
     //load bomb
     this.load.image('bomb', 'assets/bomb.png');
@@ -111,7 +107,7 @@ function create() {
     // load the map 
     map = this.make.tilemap({key: 'map'});
     
-/*    let backgroundMusic = this.sound.add('music');
+/*  let backgroundMusic = this.sound.add('music');
     backgroundMusic.play();*/
     
 /*    music.play({
@@ -119,7 +115,7 @@ function create() {
         loop: true
     })*/
     
-        // set background color, so the sky is not black    
+    //set background per weather    
     //this.cameras.main.setBackgroundColor('#ccccff');
     if(background_image.indexOf('rain') !== -1){
         
@@ -137,11 +133,6 @@ function create() {
     // the player will collide with this layer
     groundLayer.setCollisionByExclusion([-1]);
 
-    // coin image used as tileset
-    //var coinTiles = map.addTilesetImage('coin');
-    // add coins as tiles
-    //coinLayer = map.createDynamicLayer('Coins', coinTiles, 0, 0);
-
     // set the boundaries of our game world
     this.physics.world.bounds.width = groundLayer.width;
     this.physics.world.bounds.height = groundLayer.height;
@@ -157,12 +148,6 @@ function create() {
     // player will collide with the level tiles 
     this.physics.add.collider(groundLayer, player);
 
-/*
-    coinLayer.setTileIndexCallback(17, collectCoin, this);
-    // when the player overlaps with a tile with index 17, collectCoin 
-    // will be called    
-    this.physics.add.overlap(player, coinLayer);
-*/
 
     // player walk animation
     this.anims.create({
@@ -188,19 +173,13 @@ function create() {
 
 
 
-    // this text will show the score
-    text = this.add.text(20, 20, '0', {
-        fontSize: '20px',
-        fill: '#ffffff'
-    });
-    
+    //show the score in top left
     scoreText = this.add.text(40, 18, 'score: 0', {
         fontSize: '24px', 
         fill: '#ffffff'
     });    
 
     // fix the text to the camera
-    text.setScrollFactor(0);
     scoreText.setScrollFactor(0);
     
     stars = this.physics.add.group({
@@ -241,14 +220,6 @@ function update(time, delta) {
     {
         player.body.setVelocityY(-500);        
     }
-}
-
-// this function will be called when the player touches a coin
-function collectCoin(sprite, tile) {
-    coinLayer.removeTileAt(tile.x, tile.y); // remove the tile/coin
-    score++; // add 10 points to the score
-    text.setText(score); // set the text to show the current score
-    return false;
 }
 
 function collectStar (player, star){
